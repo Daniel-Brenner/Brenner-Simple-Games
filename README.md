@@ -1,4 +1,6 @@
-make sure the connect1+1+2.py file is in the same folder as cmu_graphics
-After that just run the connect1+1+2.py and you can have fun with a very simple game of connect4!
+Collection of my very simple games:
+1.Connect1+1+2
+2.Tic-Tac-Toe
 
-right now only the arrow keys are chilling, don't try to click stuff 
+make sure the {game}.py file is in the same folder as cmu_graphics
+After that just run the {game}.py and you can have fun with my very simple games
