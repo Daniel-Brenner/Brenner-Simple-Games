@@ -194,7 +194,6 @@ def drawGameOverWithVictory(app):
 
 def drawGameOverWithTie(app):
     drawLabel('Game Over! It was a tie!',app.width/2,(10/11)*app.height,size=18,bold=True)
-    
 
 def game_onKeyPress(app,key):
     if not app.gameOver:
