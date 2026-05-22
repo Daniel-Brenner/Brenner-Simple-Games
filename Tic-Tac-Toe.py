@@ -160,7 +160,6 @@ def drawBotRight(app):
     drawLine(cellLeft,cellTop,topRightX,topRightY)
 
 def drawGameOver(app):
-    
     drawLabel('Press any key or mouse button to restart game',app.width/2,(5/6)*app.height)
     if someoneWon(app):
         drawLabel('Game over!',app.width/2,(1/6)*app.height)
