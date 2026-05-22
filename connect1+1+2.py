@@ -271,8 +271,8 @@ def winFromCurPosition(app,row,col,player):
            (-1,1), (0,1), (1,1)]
     connectFour = 4 #Win condition is connect 4
     for drow, dcol in dir:
-        endRow = row + connectFour * drow
-        endCol = col + connectFour * dcol
+        endRow = row + (connectFour - 1) * drow
+        endCol = col + (connectFour - 1) * dcol
         if endRow < 0 or endRow >= app.rows or endCol < 0 or endCol >= app.cols:
             continue
         else:
