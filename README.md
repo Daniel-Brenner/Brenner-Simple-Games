@@ -1,5 +1,7 @@
 Collection of my very simple games:
+
 1.Connect1+1+2
+
 2.Tic-Tac-Toe
 
 make sure the {game}.py file is in the same folder as cmu_graphics
