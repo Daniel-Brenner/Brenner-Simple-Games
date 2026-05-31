@@ -1,4 +1,5 @@
 from cmu_graphics import *
+import random
 
 def onAppStart(app):
     app.bestScore = 0
@@ -12,6 +13,8 @@ def resetApp(app):
     app.boardWidth = (300/400) * app.width
     app.boardHeight = (300/400) * app.height
     app.boardStatus = boardGen(app)
+    addRandom(app)
+    addRandom(app)
     app.curScore = 0
 
 def boardGen(app):
@@ -20,6 +23,19 @@ def boardGen(app):
         newRow = [None] * app.cols
         res.append(newRow)
     return res
+
+def addRandom(app):
+    randNum = random.randrange(101)
+    if randNum >= 90:
+        nextNum = 4
+    else:
+        nextNum = 2
+    added = False
+    while added == False:
+        randRow,randCol = random.randrange(app.rows),random.randrange(app.cols)
+        if app.boardStatus[randRow][randCol] == None:
+            app.boardStatus[randRow][randCol] = nextNum
+            added = True
 
 def redrawAll(app):
     drawBoard(app)
@@ -42,7 +58,43 @@ def drawGrid(app):
 def drawCell(app,row,col):
     cellWidth,cellHeight = getCellSize(app)
     cellLeft,cellTop = getCellLeftTop(app,row,col,cellWidth,cellHeight)
-    drawRect(cellLeft,cellTop,cellWidth,cellHeight,fill=None,border='black')
+    cellMidX,cellMidY = getCellMid(cellLeft,cellTop,cellWidth,cellHeight)
+    cellNum = app.boardStatus[row][col]
+    if cellNum == None:
+        drawRect(cellLeft,cellTop,cellWidth,cellHeight,fill=None,border='black')
+    elif cellNum == 2:
+        drawRect(cellLeft,cellTop,cellWidth,cellHeight,fill='yellow',border='black')
+        drawLabel(str(cellNum),cellMidX,cellMidY)
+    elif cellNum == 4:
+        drawRect(cellLeft,cellTop,cellWidth,cellHeight,fill='orange',border='black')
+        drawLabel(str(cellNum),cellMidX,cellMidY)
+    elif cellNum == 8:
+        drawRect(cellLeft,cellTop,cellWidth,cellHeight,fill='pink',border='black')
+        drawLabel(str(cellNum),cellMidX,cellMidY)
+    elif cellNum == 16:
+        drawRect(cellLeft,cellTop,cellWidth,cellHeight,fill='blue',border='black')
+        drawLabel(str(cellNum),cellMidX,cellMidY)
+    elif cellNum == 32:
+        drawRect(cellLeft,cellTop,cellWidth,cellHeight,fill='maroon',border='black')
+        drawLabel(str(cellNum),cellMidX,cellMidY)
+    elif cellNum == 64:
+        drawRect(cellLeft,cellTop,cellWidth,cellHeight,fill='crimson',border='black')
+        drawLabel(str(cellNum),cellMidX,cellMidY)
+    elif cellNum == 128:
+        drawRect(cellLeft,cellTop,cellWidth,cellHeight,fill='cyan',border='black')
+        drawLabel(str(cellNum),cellMidX,cellMidY)
+    elif cellNum == 256:
+        drawRect(cellLeft,cellTop,cellWidth,cellHeight,fill='lightGreen',border='black')
+        drawLabel(str(cellNum),cellMidX,cellMidY)
+    elif cellNum == 512:
+        drawRect(cellLeft,cellTop,cellWidth,cellHeight,fill='violet',border='black')
+        drawLabel(str(cellNum),cellMidX,cellMidY)
+    elif cellNum == 1024:
+        drawRect(cellLeft,cellTop,cellWidth,cellHeight,fill='indigo',border='black')
+        drawLabel(str(cellNum),cellMidX,cellMidY)
+    else:
+        drawRect(cellLeft,cellTop,cellWidth,cellHeight,fill='brown',border='black')
+        drawLabel(str(cellNum),cellMidX,cellMidY)
 
 def getCellLeftTop(app,row,col,cellWidth,cellHeight):
     return app.boardLeft + col * cellWidth,app.boardTop + row * cellHeight
@@ -53,7 +105,36 @@ def getCellSize(app):
 def drawOutline(app):
     drawRect(app.boardLeft,app.boardTop,app.boardWidth,app.boardHeight,fill=None,border='black',borderWidth=4)
 
+def getCellMid(cellLeft,cellTop,cellWidth,cellHeight):
+    return cellLeft + cellWidth / 2, cellTop + cellHeight / 2
+
+def onKeyPress(app,key):
+    if isLegal(app,key):
+        makeMove(app,key)
+
+def isLegal(app,key):
+    if key not in {'up','down','left','right'}:
+        return False
+    if key == 'up':
+        colsCheck = [False] * app.cols
+        for col in range(app.cols):
+            colFound = False
+            colNum = None
+            for row in range(app.rows - 1,-1,-1):
+                if row == 0 and app.boardStatus[row][col] == None and not colFound:
+                    colsCheck[col] = True
+                elif app.boardStatus[row][col] != None and not colFound:
+                    colFound = True
+                    colNum = app.boardStatus[row][col]
+                #function NOT complete
+        return colsCheck == ([True] * app.cols)
+    elif key == 'down':
+        pass
+
+def makeMove(app):
+    pass
+    
 def main():
-    runApp()
+    runApp(width=500,height=500)
 
 main()
