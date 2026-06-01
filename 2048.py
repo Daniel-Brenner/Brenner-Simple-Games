@@ -111,6 +111,7 @@ def getCellMid(cellLeft,cellTop,cellWidth,cellHeight):
 def onKeyPress(app,key):
     if isLegal(app,key):
         makeMove(app,key)
+        addRandom(app)
 
 def isLegal(app,key):
     if key not in {'up','down','left','right'}:
@@ -121,18 +122,99 @@ def isLegal(app,key):
             colFound = False
             colNum = None
             for row in range(app.rows - 1,-1,-1):
-                if row == 0 and app.boardStatus[row][col] == None and not colFound:
+                if app.boardStatus[row][col] == None:
                     colsCheck[col] = True
                 elif app.boardStatus[row][col] != None and not colFound:
                     colFound = True
                     colNum = app.boardStatus[row][col]
-                #function NOT complete
+                else: #app.boardStatus[row][col] != None and colFound
+                    if app.boardStatus[row][col] == colNum:
+                        colsCheck[col] = True
         return colsCheck == ([True] * app.cols)
     elif key == 'down':
         pass
+    elif key == 'left':
+        pass
+    else: #key = 'right'
+        pass
 
-def makeMove(app):
-    pass
+def makeMove(app,key):
+    if key == 'up':
+        allCols = []
+        for col in range(app.cols):
+            newCol = []
+            for row in range(app.rows):
+                newCol.append(app.boardStatus[row][col])
+            allCols.append(newCol)
+        temps = manageShift(allCols)
+        app.boardStatus = switchRowsCol(temps)
+        # for col in range(app.cols):
+        #     colFound = False
+        #     for row in range(app.rows - 1,-1,-1):
+        #         if app.boardStatus[row][col] == None and not colFound:
+        #             continue
+        #         elif app.boardStatus[row][col] == None and colFound:
+        #             app.boardStatus[row][col] = colNum
+        #             app.boardStatus[storeRow][storeCol] = None
+        #             storeRow,storeCol = row,col
+        #         elif app.boardStatus[row][col] != None and not colFound:
+        #             colFound = True
+        #             colNum = app.boardStatus[row][col]
+        #             storeRow,storeCol = row, col
+        #         else: #app.boardStatus[row][col] != None and colFound:
+        #             if app.boardStatus[row][col] == colNum:
+        #                 app.boardStatus[row][col] = app.boardStatus[row][col] * 2
+        #                 app.boardStatus[storeRow][storeCol] = None
+        #             else:
+        #                 colNum = app.boardStatus[row][col]
+        #                 storeRow,storeCol = row,col
+
+def manageShift(L):
+    res = []
+    for entry in L:
+        res.append(shift(entry))
+    return res
+
+def shift(L):
+    newL = removeWhiteSpace(L)
+    res = []
+    skip = False
+    for i in range(len(newL) - 1):
+        if skip:
+            skip = False
+            continue
+        else:
+            if newL[i] != newL[i + 1]:
+                res.append(newL[i])
+            else:
+                res.append(newL[i] * 2)
+                skip = True
+    if not skip and len(newL) > 0:
+        res.append(newL[-1])
+    return addWhiteSpace(res)
+
+def removeWhiteSpace(L):
+    res = []
+    for entry in L:
+        if entry != None:
+            res.append(entry)
+    return res
+
+def addWhiteSpace(L):
+    res = L
+    gridLengthVariable = 4
+    while len(res) < gridLengthVariable:
+        res.append(None)
+    return res
+
+def switchRowsCol(L):
+    res = []
+    for col in range(len(L[0])):
+        newCol = []
+        for row in range(len(L)):
+            newCol.append(L[row][col])
+        res.append(newCol)
+    return res
     
 def main():
     runApp(width=500,height=500)
