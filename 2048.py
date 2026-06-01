@@ -60,41 +60,23 @@ def drawCell(app,row,col):
     cellLeft,cellTop = getCellLeftTop(app,row,col,cellWidth,cellHeight)
     cellMidX,cellMidY = getCellMid(cellLeft,cellTop,cellWidth,cellHeight)
     cellNum = app.boardStatus[row][col]
+    colors = {2:'yellow',
+              4:'orange',
+              8:'pink',
+              16:'blue',
+              32:'maroon',
+              64:'crimson',
+              128:'cyan',
+              256:'lightGreen',
+              512:'violet',
+              1024:'indigo',
+              2048:'brown'}
+    if cellNum in colors:
+        curColor = colors[cellNum]
+        drawRect(cellLeft,cellTop,cellWidth,cellHeight,fill=curColor,border='black')
+        drawLabel(str(cellNum),cellMidX,cellMidY)
     if cellNum == None:
         drawRect(cellLeft,cellTop,cellWidth,cellHeight,fill=None,border='black')
-    elif cellNum == 2:
-        drawRect(cellLeft,cellTop,cellWidth,cellHeight,fill='yellow',border='black')
-        drawLabel(str(cellNum),cellMidX,cellMidY)
-    elif cellNum == 4:
-        drawRect(cellLeft,cellTop,cellWidth,cellHeight,fill='orange',border='black')
-        drawLabel(str(cellNum),cellMidX,cellMidY)
-    elif cellNum == 8:
-        drawRect(cellLeft,cellTop,cellWidth,cellHeight,fill='pink',border='black')
-        drawLabel(str(cellNum),cellMidX,cellMidY)
-    elif cellNum == 16:
-        drawRect(cellLeft,cellTop,cellWidth,cellHeight,fill='blue',border='black')
-        drawLabel(str(cellNum),cellMidX,cellMidY)
-    elif cellNum == 32:
-        drawRect(cellLeft,cellTop,cellWidth,cellHeight,fill='maroon',border='black')
-        drawLabel(str(cellNum),cellMidX,cellMidY)
-    elif cellNum == 64:
-        drawRect(cellLeft,cellTop,cellWidth,cellHeight,fill='crimson',border='black')
-        drawLabel(str(cellNum),cellMidX,cellMidY)
-    elif cellNum == 128:
-        drawRect(cellLeft,cellTop,cellWidth,cellHeight,fill='cyan',border='black')
-        drawLabel(str(cellNum),cellMidX,cellMidY)
-    elif cellNum == 256:
-        drawRect(cellLeft,cellTop,cellWidth,cellHeight,fill='lightGreen',border='black')
-        drawLabel(str(cellNum),cellMidX,cellMidY)
-    elif cellNum == 512:
-        drawRect(cellLeft,cellTop,cellWidth,cellHeight,fill='violet',border='black')
-        drawLabel(str(cellNum),cellMidX,cellMidY)
-    elif cellNum == 1024:
-        drawRect(cellLeft,cellTop,cellWidth,cellHeight,fill='indigo',border='black')
-        drawLabel(str(cellNum),cellMidX,cellMidY)
-    else:
-        drawRect(cellLeft,cellTop,cellWidth,cellHeight,fill='brown',border='black')
-        drawLabel(str(cellNum),cellMidX,cellMidY)
 
 def getCellLeftTop(app,row,col,cellWidth,cellHeight):
     return app.boardLeft + col * cellWidth,app.boardTop + row * cellHeight
