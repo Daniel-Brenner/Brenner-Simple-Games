@@ -43,12 +43,16 @@ def addRandom(app):
     app.boardStatus[randRow][randCol] = nextNum
  
 def redrawAll(app):
+    drawBack(app)
     drawBoard(app)
     drawScore(app)
     if app.gameOver:
         drawGameOver(app)
     if app.gameWon:
         drawWin(app)
+
+def drawBack(app):
+    drawRect(0,0,app.width,app.height,fill=rgb(187, 173, 160))
  
 def drawScore(app):
     drawLabel('Welcome to 2048!', app.width/2, (1/12)*app.height, size=14, bold=True)
@@ -85,23 +89,23 @@ def drawCell(app, row, col):
     cellLeft, cellTop = getCellLeftTop(app, row, col, cellWidth, cellHeight)
     cellMidX, cellMidY = getCellMid(cellLeft, cellTop, cellWidth, cellHeight)
     cellNum = app.boardStatus[row][col]
-    colors = {2: 'yellow',
-              4: 'orange',
-              8: 'pink',
-              16: 'blue',
-              32: 'maroon',
-              64: 'crimson',
-              128: 'cyan',
-              256: 'lightGreen',
-              512: 'violet',
-              1024: 'indigo',
-              2048: 'brown'}
+    colors = {2: rgb(238, 228, 218),
+              4: rgb(237, 224, 200),
+              8: rgb(242, 177, 121),
+              16: rgb(245, 149, 99),
+              32: rgb(246, 124, 95),
+              64: rgb(246, 94, 59),
+              128: rgb(237, 207, 114),
+              256: rgb(237, 204, 97),
+              512: rgb(237, 200, 80),
+              1024: rgb(237, 197, 63),
+              2048: rgb(237, 194, 46)}
     if cellNum in colors:
         curColor = colors[cellNum]
         drawRect(cellLeft, cellTop, cellWidth, cellHeight, fill=curColor, border='black')
         drawLabel(str(cellNum), cellMidX, cellMidY)
     if cellNum == None:
-        drawRect(cellLeft, cellTop, cellWidth, cellHeight, fill=None, border='black')
+        drawRect(cellLeft, cellTop, cellWidth, cellHeight, fill=rgb(205, 192, 180), border='black')
  
 def getCellLeftTop(app, row, col, cellWidth, cellHeight):
     return app.boardLeft + col * cellWidth, app.boardTop + row * cellHeight
@@ -221,11 +225,6 @@ def manageShift(L):
     return res, totalScore
  
 def shift(L):
-    # Returns (shifted_list, score_gained)
-    # Score rule: merging two tiles of value N gives N*2 * 5 points
-    # e.g. 2+2 -> merged=4, score += 4*5 = 20
-    #      4+4 -> merged=8, score += 8*5 = 40
-    #    256+256 -> merged=512, score += 512*5 = 2560
     targetLen = len(L)
     newL = removeWhiteSpace(L)
     res = []
