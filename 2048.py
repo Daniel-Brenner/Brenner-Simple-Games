@@ -1,6 +1,6 @@
 from cmu_graphics import *
 import random
-
+ 
 def onAppStart(app):
     app.bestScore = 0
     resetApp(app)
@@ -136,26 +136,27 @@ def isLegal(app, key):
     if key == 'up':
         for col in range(app.cols):
             colList = [app.boardStatus[row][col] for row in range(app.rows)]
-            if shift(colList) != colList:
+            if shift(colList)[0] != colList:
                 return True
     elif key == 'down':
         for col in range(app.cols):
             colList = [app.boardStatus[row][col] for row in range(app.rows - 1, -1, -1)]
-            if shift(colList) != colList:
+            if shift(colList)[0] != colList:
                 return True
     elif key == 'left':
         for row in range(app.rows):
             rowList = app.boardStatus[row][:]
-            if shift(rowList) != rowList:
+            if shift(rowList)[0] != rowList:
                 return True
     else:  # key == 'right'
         for row in range(app.rows):
             rowList = app.boardStatus[row][::-1]
-            if shift(rowList) != rowList:
+            if shift(rowList)[0] != rowList:
                 return True
     return False
  
 def makeMove(app, key):
+    totalScore = 0
     if key == 'up':
         allCols = []
         for col in range(app.cols):
@@ -163,7 +164,8 @@ def makeMove(app, key):
             for row in range(app.rows):
                 colList.append(app.boardStatus[row][col])
             allCols.append(colList)
-        temps = manageShift(allCols)
+        temps, score = manageShift(allCols)
+        totalScore += score
         app.boardStatus = switchRowsCol(temps)
     elif key == 'down':
         allCols = []
@@ -172,22 +174,29 @@ def makeMove(app, key):
             for row in range(app.rows - 1, -1, -1):
                 colList.append(app.boardStatus[row][col])
             allCols.append(colList)
-        temps = manageShift(allCols)
+        temps, score = manageShift(allCols)
+        totalScore += score
         reversedTemps = []
         for colList in temps:
             reversedTemps.append(colList[::-1])
         app.boardStatus = switchRowsCol(reversedTemps)
     elif key == 'left':
-        app.boardStatus = manageShift(app.boardStatus)
+        app.boardStatus, score = manageShift(app.boardStatus)
+        totalScore += score
     else:  # key == 'right'
         allRows = []
         for row in range(app.rows):
             rowList = app.boardStatus[row][::-1]
             allRows.append(rowList)
-        temps = manageShift(allRows)
+        temps, score = manageShift(allRows)
+        totalScore += score
         app.boardStatus = []
         for rowList in temps:
             app.boardStatus.append(rowList[::-1])
+ 
+    app.curScore += totalScore
+    if app.curScore > app.bestScore:
+        app.bestScore = app.curScore
  
 def checkWin(app):
     for row in range(app.rows):
@@ -204,14 +213,23 @@ def isGameOver(app):
  
 def manageShift(L):
     res = []
+    totalScore = 0
     for entry in L:
-        res.append(shift(entry))
-    return res
+        shifted, score = shift(entry)
+        res.append(shifted)
+        totalScore += score
+    return res, totalScore
  
 def shift(L):
+    # Returns (shifted_list, score_gained)
+    # Score rule: merging two tiles of value N gives N*2 * 5 points
+    # e.g. 2+2 -> merged=4, score += 4*5 = 20
+    #      4+4 -> merged=8, score += 8*5 = 40
+    #    256+256 -> merged=512, score += 512*5 = 2560
     targetLen = len(L)
     newL = removeWhiteSpace(L)
     res = []
+    score = 0
     skip = False
     for i in range(len(newL) - 1):
         if skip:
@@ -221,11 +239,13 @@ def shift(L):
             if newL[i] != newL[i + 1]:
                 res.append(newL[i])
             else:
-                res.append(newL[i] * 2)
+                merged = newL[i] * 2
+                res.append(merged)
+                score += merged * 5
                 skip = True
     if not skip and len(newL) > 0:
         res.append(newL[-1])
-    return addWhiteSpace(res, targetLen)
+    return addWhiteSpace(res, targetLen), score
  
 def removeWhiteSpace(L):
     res = []
