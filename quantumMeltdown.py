@@ -128,6 +128,8 @@ def processTurn(app):
         if app.cores[i]['timer'] <= 0:
             exploded.append(app.cores.pop(i))
             
+# 3. Process explosions
+##
     # 3. Process explosions
     for ex in exploded:
         er, ec = ex['row'], ex['col']
@@ -136,7 +138,13 @@ def processTurn(app):
             nr, nc = er + dr, ec + dc
             if 0 <= nr < app.rows and 0 <= nc < app.cols:
                 app.board[nr][nc] = -1
-
+                
+    # 3.5 Destroy any remaining cores caught in the blast
+    for i in range(len(app.cores)-1, -1, -1):
+        cr, cc = app.cores[i]['row'], app.cores[i]['col']
+        if app.board[cr][cc] == -1:
+            app.cores.pop(i)
+##
     # 4. Check if player died from explosion
     if app.board[app.playerRow][app.playerCol] == -1:
         app.gameOver = True
