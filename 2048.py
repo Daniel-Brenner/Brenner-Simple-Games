@@ -60,19 +60,21 @@ def drawScore(app):
     drawLabel(f'Best Score = {app.bestScore}', (13/16)*app.width, (9/64)*app.height)
  
 def drawGameOver(app):
-    drawRect(app.width/2, app.height/2, 300, 150,
+    drawRect(app.width/2, app.height/2, (300/400) * app.width, (150/400) * app.height,
              fill='black', opacity=80, align='center')
-    drawLabel('Game Over!', app.width/2, app.height/2 - 20,
+    adjustment = (20/400) * app.height
+    drawLabel('Game Over!', app.width/2, app.height/2 - adjustment,
               size=24, bold=True, fill='white')
-    drawLabel('Press R to Restart', app.width/2, app.height/2 + 20,
+    drawLabel('Press R to Restart', app.width/2, app.height/2 + adjustment,
               size=16, fill='white')
  
 def drawWin(app):
-    drawRect(app.width/2, app.height/2, 300, 150,
+    drawRect(app.width/2, app.height/2, (300/400) * app.width, (150/400) * app.height,
              fill='gold', opacity=80, align='center')
-    drawLabel('You Reached 2048!', app.width/2, app.height/2 - 20,
+    adjustment = (20/400) * app.height
+    drawLabel('You Reached 2048!', app.width/2, app.height/2 - adjustment,
               size=20, bold=True, fill='white')
-    drawLabel('Press R to Restart', app.width/2, app.height/2 + 20,
+    drawLabel('Press R to Restart', app.width/2, app.height/2 + adjustment,
               size=14, fill='white')
  
 def drawBoard(app):
