@@ -6,5 +6,7 @@ Collection of my very simple games:
 
 3.2048
 
+4.XXXXX (fully vibe coded)
+
 make sure the {game}.py file is in the same folder as cmu_graphics
 After that just run the {game}.py and you can have fun with my very simple games
