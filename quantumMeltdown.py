@@ -83,6 +83,8 @@ def onKeyPress(app, key):
             return
             
         if app.paused:
+            if key == 'enter':
+                app.screen = 'home'
             return
             
         if app.gameOver or app.won:
@@ -239,7 +241,7 @@ def drawGame(app):
     drawPlayer(app)
     
     if app.paused:
-        drawOverlay(app, 'PAUSED', 'Press P to Resume', rgb(0,0,150))
+        drawOverlay(app, 'PAUSED', 'P: Resume | ENTER: Home Screen', rgb(0,0,150))
     elif app.won:
         drawOverlay(app, 'SYSTEM STABILIZED!', 'You collected enough cores.', rgb(100,0,180))
         drawLabel('Press R to Restart or ENTER for Home', app.width/2, app.height/2 + 50, size=14, fill='white')
