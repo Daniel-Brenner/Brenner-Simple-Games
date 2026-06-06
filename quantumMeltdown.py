@@ -147,23 +147,27 @@ def redrawAll(app):
         drawGame(app)
 
 def drawHome(app):
-    drawLabel('QUANTUM', app.width/2, 100, size=40, fill='cyan', bold=True, font='monospace')
-    drawLabel('MELTDOWN', app.width/2, 145, size=40, fill='orange', bold=True, font='monospace')
-    drawLabel('A Turn-Based Grid Survival Game', app.width/2, 185, size=14, fill='lightgray')
+    drawLabel('QUANTUM', app.width/2, (100/500) * app.height, size=40, fill='cyan', bold=True, font='monospace')
+    drawLabel('MELTDOWN', app.width/2, (145/500) * app.height, size=40, fill='orange', bold=True, font='monospace')
+    drawLabel('A Turn-Based Grid Survival Game', app.width/2, (185/400) * app.height, size=14, fill='lightgray')
     playFill = 'darkgreen' if app.homeSelection == 0 else 'gray'
-    drawRect(app.width/2, 280, 160, 50, align='center', fill=playFill, border='white')
-    drawLabel('PLAY', app.width/2, 280, size=20, fill='white', bold=True)
+    drawRect(app.width/2, (280/500) * app.height, (160/400) * app.width, (50/500) * app.height, align='center', fill=playFill, border='white')
+    drawLabel('PLAY', app.width/2, (280/500) * app.height, size=20, fill='white', bold=True)
+    adj = (60/400) * app.width
     if app.homeSelection == 0:
-        drawLabel('>', app.width/2 - 60, 280, size=20, fill='white', bold=True)
-    tutFill = 'darkblue' if app.homeSelection == 1 else 'gray'
-    drawRect(app.width/2, 350, 160, 50, align='center', fill=tutFill, border='white')
-    drawLabel('TUTORIAL', app.width/2, 350, size=20, fill='white', bold=True)
+        drawLabel('>', app.width/2 - adj, (280/500) * app.height, size=20, fill='white', bold=True)
     if app.homeSelection == 1:
-        drawLabel('>', app.width/2 - 60, 350, size=20, fill='white', bold=True)
-    drawLabel('Use ARROW KEYS to select, ENTER to confirm', app.width/2, 450, size=12, fill='gray')
+        tutFill = 'darkblue'
+    else:
+        tutFill = 'gray'
+    drawRect(app.width/2, (350/500) * app.height, (160/400) * app.width, (50/500) * app.height, align='center', fill=tutFill, border='white')
+    drawLabel('TUTORIAL', app.width/2, (350/500) * app.height, size=20, fill='white', bold=True)
+    if app.homeSelection == 1:
+        drawLabel('>', app.width/2 - adj, (350/500) * app.height, size=20, fill='white', bold=True)
+    drawLabel('Use ARROW KEYS to select, ENTER to confirm', app.width/2, (450/500) * app.height, size=12, fill='gray')
 
 def drawTutorial(app):
-    drawLabel('HOW TO PLAY', app.width/2, 50, size=24, fill='white', bold=True)
+    drawLabel('HOW TO PLAY', app.width/2, (50/500) * app.height, size=24, fill='white', bold=True)
     instructions = [
         "1. You are the cyan circle. Move with ARROW KEYS.",
         "2. Red Cores will spawn on the grid with a timer.",
