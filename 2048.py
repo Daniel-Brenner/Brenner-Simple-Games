@@ -72,7 +72,7 @@ def drawWin(app):
              fill='gold', opacity=80, align='center')
     drawLabel('You Reached 2048!', app.width/2, app.height/2 - 20,
               size=20, bold=True, fill='white')
-    drawLabel('R to Restart or Keep Playing!', app.width/2, app.height/2 + 20,
+    drawLabel('Press R to Restart', app.width/2, app.height/2 + 20,
               size=14, fill='white')
  
 def drawBoard(app):
@@ -126,13 +126,14 @@ def onKeyPress(app, key):
         return
     if app.gameOver:
         return
-    if key in {'up', 'down', 'left', 'right'} and isLegal(app, key):
-        makeMove(app, key)
-        addRandom(app)
-        if not app.gameWon:
-            app.gameWon = checkWin(app)
-        if isGameOver(app):
-            app.gameOver = True
+    if not app.gameWon:
+        if key in {'up', 'down', 'left', 'right'} and isLegal(app, key):
+            makeMove(app, key)
+            addRandom(app)
+            if not app.gameWon:
+                app.gameWon = checkWin(app)
+            if isGameOver(app):
+                app.gameOver = True
  
 def isLegal(app, key):
     if key not in {'up', 'down', 'left', 'right'}:
