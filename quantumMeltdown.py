@@ -2,12 +2,8 @@ from cmu_graphics import *
 import random
 
 def onAppStart(app):
-    app.width = 400
-    app.height = 500
     app.screen = 'home'
     app.homeSelection = 0 # 0 for Play, 1 for Tutorial
-    
-    # Board dimensions
     app.rows = 8
     app.cols = 8
     app.boardLeft = 20
@@ -295,6 +291,6 @@ def drawOverlay(app, title, subtext, overlayColor):
     drawLabel(subtext, app.width/2, app.height/2 + 20, size=16, fill='lightgray')
 
 def main():
-    runApp()
+    runApp(width=400,height=500)
 
 main()
