@@ -180,10 +180,11 @@ def drawTutorial(app):
         "9. If you are caught in a blast or trapped, you lose.",
         f"10. Collect {app.targetScore} Cores to stabilize the reactor."
     ]
-    startY = 100
+    startY = (100/500) * app.height
+    increment = (30/500) * app.height
     for i, line in enumerate(instructions):
         color = 'salmon' if 'WARNING' in line or 'EXPLODES' in line else 'lightgray'
-        drawLabel(line, 20, startY + (i * 30), size=13, fill=color, align='left')
+        drawLabel(line, app.width/2, startY + (i * increment), size=13, fill=color)
     drawRect(app.width/2, (430/500) * app.height, (200/400) * app.width, (40/500) * app.height, align='center', fill='darkblue', border='white')
     drawLabel('Press ENTER to return', app.width/2, 430, size=14, fill='white', bold=True)
 
