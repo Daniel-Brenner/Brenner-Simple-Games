@@ -8,5 +8,7 @@ Collection of my very simple games:
 
 4.Quantum Meltdown (vibe coded, then reviewed manually)
 
+rawr
+
 make sure the {game}.py file is in the same folder as cmu_graphics
 After that just run the {game}.py and you can have fun with my very simple games
