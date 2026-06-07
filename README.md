@@ -6,7 +6,7 @@ Collection of my very simple games:
 
 3.2048
 
-4.Quantum Meltdown (fully vibe coded)
+4.Quantum Meltdown (vibe coded, then reviewed manually)
 
 make sure the {game}.py file is in the same folder as cmu_graphics
 After that just run the {game}.py and you can have fun with my very simple games
