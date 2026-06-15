@@ -39,6 +39,11 @@ def select_redrawAll(app):
             drawCircle((2/4)*app.width,(3/4)*app.height,circleRadius,fill=app.p2Color,border='black')
             drawRect((2/4)*app.width,(3/4)*app.height,selectRectWidth,selectRectHeight,fill='darkGreen',border='black',align='left')
             drawLabel('selected',(2/4)*app.width + adj,(3/4)*app.height,size=14,align='left')
+    if app.colorSelectDone:
+        drawSmallDots(app)
+
+def drawSmallDots(app):
+    pass
 
 def select_onKeyPress(app,key):
     if not app.colorSelectDone:
