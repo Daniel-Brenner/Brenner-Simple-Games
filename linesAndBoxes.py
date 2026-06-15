@@ -20,7 +20,7 @@ def resetApp(app):
 def select_redrawAll(app):
     drawRect(0,0,app.width,app.height,fill='maroon')
     drawLabel('Welcome to Lines and Boxes!',app.width/2,(1/4)*app.height,size=24,bold=True,fill='yellow')
-    circleRadius = 30
+    circleRadius = (30/400) * app.width
     selectRectWidth,selectRectHeight = (60/400)*app.width,(20/400)*app.height
     adj = (3/400) * app.width
     labelAdj = (3/400) * app.height
@@ -43,7 +43,17 @@ def select_redrawAll(app):
         drawSmallDots(app)
 
 def drawSmallDots(app):
-    pass
+    squareOffset = (30/400) * app.width
+    squareSize = squareOffset * 2
+    difference = squareSize / app.dim
+    squareCenterX,squareCenterY = (3/4)*app.width,(3/4)*app.height
+    squareLeft,squareTop = squareCenterX - squareOffset,squareCenterY - squareOffset
+    smallDotRadius = (1/400) * app.width
+    for i in range(app.dim):
+        x = squareLeft + i * difference
+        for j in range(app.dim):
+            y = squareTop + j * difference
+            drawCircle(x,y,smallDotRadius)
 
 def select_onKeyPress(app,key):
     if not app.colorSelectDone:
@@ -97,6 +107,9 @@ def select_onKeyPress(app,key):
 #############################################
 #__gameScreen__
 #############################################
+
+def game_redrawAll(app):
+    drawRect(10,10,10,10)
 
 def main():
     runAppWithScreens(initialScreen='select')
