@@ -4,6 +4,7 @@ def onAppStart(app):
     resetApp(app)
 
 def resetApp(app):
+    #select
     app.p1ColorSelected = False
     app.colors = ['red','orange','yellow','green','blue','indigo','violet']
     app.colorSelectIndex = 0
@@ -13,14 +14,28 @@ def resetApp(app):
     app.colorSelectDone = False
     app.gridSizeSelectDone = False
     app.instruction = False
+    #game
+
 
 ################################################
 #__selectScreen___
 ################################################
 
 def select_redrawAll(app):
+    drawBGAndLabels(app)
+    drawColorSelectCircles(app)
+    if app.colorSelectDone:
+        drawSmallDots(app)
+    if app.instruction:
+        drawInstruction(app)
+
+def drawBGAndLabels(app):
     drawRect(0,0,app.width,app.height,fill='maroon')
     drawLabel('Welcome to Lines and Boxes!',app.width/2,(1/4)*app.height,size=24,bold=True,fill='yellow')
+    adj = (24/400) * app.height
+    drawLabel("Press 'i' to view instructions",app.width/2,(1/4)*app.height + adj,size=15,fill='yellow')
+
+def drawColorSelectCircles(app):
     circleRadius = (30/400) * app.width
     selectRectWidth,selectRectHeight = (60/400)*app.width,(20/400)*app.height
     adj = (3/400) * app.width
@@ -40,10 +55,6 @@ def select_redrawAll(app):
             drawCircle((2/4)*app.width,(3/4)*app.height,circleRadius,fill=app.p2Color,border='black')
             drawRect((2/4)*app.width,(3/4)*app.height,selectRectWidth,selectRectHeight,fill='darkGreen',border='black',align='left')
             drawLabel('selected',(2/4)*app.width + adj,(3/4)*app.height,size=14,align='left')
-    if app.colorSelectDone:
-        drawSmallDots(app)
-    if app.instruction:
-        drawInstruction(app)
 
 def drawSmallDots(app):
     squareOffset = (30/400) * app.width
@@ -52,23 +63,31 @@ def drawSmallDots(app):
     squareCenterX,squareCenterY = (3/4)*app.width,(3/4)*app.height
     squareLeft,squareTop = squareCenterX - squareOffset,squareCenterY - squareOffset
     smallDotRadius = (1/400) * app.width
+    labelAdj = (4/400) * app.height
+    xAdj = (3/400) * app.width
+    drawLabel('grid size',(3/4)*app.width - xAdj,(21/32)*app.height - labelAdj,size=14,bold=True)
     for i in range(app.dim):
         x = squareLeft + i * difference
         for j in range(app.dim):
             y = squareTop + j * difference
             drawCircle(x,y,smallDotRadius)
+    if app.gridSizeSelectDone:
+        selectRectWidth,selectRectHeight = (60/400)*app.width,(20/400)*app.height
+        adj = (3/400) * app.width
+        drawRect((3/4)*app.width,(3/4)*app.height,selectRectWidth,selectRectHeight,fill='darkGreen',border='black',align='left')
+        drawLabel('selected',(3/4)*app.width + adj,(3/4)*app.height,size=14,align='left')
 
 def drawInstruction(app):
     allInstructions = ['Instructions for Lines and Boxes!',
                        '',
-                       "press 'i' to exit instructions",
-                       'left and right arrow keys to select',
-                       'enter key to advance to next step',
-                       'move mouse over line that you want to place',
-                       'click to place the ghost piece',
-                       'score by placing the line that completes a box',
-                       'if you score, you get another turn, else opponent gets turn',
-                       'game is over when all boxes are filled',
+                       "Press 'i' to exit instructions",
+                       'Left and right arrow keys to select',
+                       'Enter key to advance to next step',
+                       'Move mouse over line that you want to place',
+                       'Click to place the ghost piece',
+                       'Score by placing the line that completes a box',
+                       'If you score, you get another turn, else opponent gets turn',
+                       'Game is over when all boxes are filled',
                        '']
     rectWidth,rectHeight = (7/8) * app.width, (1/2)*app.height
     drawRect(app.width/2,app.height/2,rectWidth,rectHeight,fill='purple',border='black',align='center')
