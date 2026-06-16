@@ -19,6 +19,7 @@ def resetApp(app):
     app.boardLeft, app.boardTop = (50/400) * app.width, (50/400) * app.height
     app.boardWidth, app.boardHeight = (300/400) * app.width, (300/400) * app.height
     app.boardStatus = boardGen(app)
+    app.hoverX,app.hoverY = app.width, app.height
 
 def boardGen(app):
     res = []
@@ -28,10 +29,9 @@ def boardGen(app):
         for _ in range(app.dim):
             newEntry = []
             for _ in range(numExits):
-                newEntry.append(False)
+                newEntry.append(None)
             newRow.append(newEntry)
         res.append(newRow)
-    print(res)
     return res
 
 ################################################
@@ -180,7 +180,7 @@ def select_onKeyPress(app,key):
 def game_redrawAll(app):
     drawBoard(app)
     drawTurnLabel(app)
-    # drawGhostPiece(app)
+    drawGhostPiece(app)
     # drawGameStatus(app)
 
 def drawBoard(app):
@@ -202,9 +202,16 @@ def drawTurnLabel(app):
         msg = "Player 2's Turn"
     drawLabel(msg,app.width/2,(2/32)*app.height,size=16,bold=True)
 
+def drawGhostPiece(app):
+    drawRect(10,10,10,10)
+    drawRect(20,20,20,20)
+    drawRect(30,30,30,30)
+
 def game_onMouseMove(app,mouseX,mouseY):
-    pass
-    
+    app.hoverX, app.hoverY = mouseX,mouseY
+
+def game_onMousePress(app,mouseX,mouseY):
+    app.hoverX, app.hoverY = app.width, app.height
 
 def main():
     runAppWithScreens(initialScreen='select')
