@@ -203,10 +203,27 @@ def drawTurnLabel(app):
     drawLabel(msg,app.width/2,(2/32)*app.height,size=16,bold=True)
 
 def drawGhostPiece(app):
-    drawRect(10,10,10,10)
-    drawRect(20,20,20,20)
-    drawRect(30,30,30,30)
-
+    diff = ((app.boardWidth / (app.dim - 1))/400) * app.width
+    adj = diff / 3
+    for i in range(app.dim):
+        y = app.boardTop + diff * i
+        for j in range(app.dim):
+            x = app.boardLeft + diff * j
+            # Check Horizontal Line (to the right of the current dot)
+            if j < app.dim - 1:
+                if (x <= app.hoverX <= x + diff and 
+                    y - adj <= app.hoverY <= y + adj):
+                    drawLine(x, y, x + diff, y, lineWidth=6, fill='yellow', opacity=70)
+                    return # Exit early once a valid line is found
+                    
+            # Check Vertical Line (below the current dot)
+            if i < app.dim - 1:
+                if (x - adj <= app.hoverX <= x + adj and 
+                    y <= app.hoverY <= y + diff):
+                    drawLine(x, y, x, y + diff, lineWidth=6, fill='yellow', opacity=70)
+                    return # Exit early
+    return
+                    
 def game_onMouseMove(app,mouseX,mouseY):
     app.hoverX, app.hoverY = mouseX,mouseY
 
