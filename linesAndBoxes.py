@@ -18,6 +18,21 @@ def resetApp(app):
     app.p1Turn = True
     app.boardLeft, app.boardTop = (50/400) * app.width, (50/400) * app.height
     app.boardWidth, app.boardHeight = (300/400) * app.width, (300/400) * app.height
+    app.boardStatus = boardGen(app)
+
+def boardGen(app):
+    res = []
+    numExits = 4
+    for _ in range(app.dim):
+        newRow = []
+        for _ in range(app.dim):
+            newEntry = []
+            for _ in range(numExits):
+                newEntry.append(False)
+            newRow.append(newEntry)
+        res.append(newRow)
+    print(res)
+    return res
 
 ################################################
 #__selectScreen___
@@ -173,7 +188,7 @@ def drawBoard(app):
         circleRad = (5/400) * app.width
     else:
         circleRad = (10/400) * app.width
-    diff = app.boardWidth / (app.dim - 1)
+    diff = ((app.boardWidth / (app.dim - 1))/400) * app.width
     for i in range(app.dim):
         y = app.boardTop + diff * i
         for j in range(app.dim):
@@ -186,6 +201,10 @@ def drawTurnLabel(app):
     else:
         msg = "Player 2's Turn"
     drawLabel(msg,app.width/2,(2/32)*app.height,size=16,bold=True)
+
+def game_onMouseMove(app,mouseX,mouseY):
+    pass
+    
 
 def main():
     runAppWithScreens(initialScreen='select')
