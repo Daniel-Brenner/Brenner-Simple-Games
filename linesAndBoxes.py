@@ -27,7 +27,7 @@ def boardGen(app):
     for _ in range(app.dim):
         newRow = []
         for _ in range(app.dim):
-            newEntry = []
+            newEntry = [None]
             for _ in range(numExits):
                 newEntry.append(None)
             newRow.append(newEntry)
@@ -181,7 +181,7 @@ def game_redrawAll(app):
     drawBoard(app)
     drawTurnLabel(app)
     drawGhostPiece(app)
-    # drawGameStatus(app)
+    drawGameStatus(app)
 
 def drawBoard(app):
     if app.dim > 6:
@@ -209,26 +209,55 @@ def drawGhostPiece(app):
         y = app.boardTop + diff * i
         for j in range(app.dim):
             x = app.boardLeft + diff * j
-            # Check Horizontal Line (to the right of the current dot)
             if j < app.dim - 1:
                 if (x <= app.hoverX <= x + diff and 
-                    y - adj <= app.hoverY <= y + adj):
+                    y - adj <= app.hoverY <= y + adj and
+                    isLegal(app,app.hoverX,app.hoverY)):
                     drawLine(x, y, x + diff, y, lineWidth=6, fill='yellow', opacity=70)
-                    return # Exit early once a valid line is found
-                    
-            # Check Vertical Line (below the current dot)
+                    return
             if i < app.dim - 1:
                 if (x - adj <= app.hoverX <= x + adj and 
-                    y <= app.hoverY <= y + diff):
+                    y <= app.hoverY <= y + diff and
+                    isLegal(app,app.hoverX,app.hoverY)):
                     drawLine(x, y, x, y + diff, lineWidth=6, fill='yellow', opacity=70)
-                    return # Exit early
-    return
-                    
+                    return
+
+def drawGameStatus(app):
+    diff = ((app.boardWidth / (app.dim - 1))/400) * app.width
+    for row in range(app.dim):
+        y = app.boardTop + diff * row
+        for col in range(app.dim):
+            x = app.boardLeft + diff * col
+            box,toLeft,toTop,toRight,toBot = app.boardStatus[row][col]
+            if box != None:
+                color = getColor(app,box)
+                drawRect(x,y,diff,diff,fill=color)
+            for entry in [toLeft,toTop,toRight,toBot]:
+                print(entry)
+                if entry != None:
+                    color = getColor(app,entry)
+
+
+def getColor(app,entry):
+    if entry == 'p1':
+        return app.p1Color
+    else:
+        return app.p2Color
+
 def game_onMouseMove(app,mouseX,mouseY):
     app.hoverX, app.hoverY = mouseX,mouseY
 
 def game_onMousePress(app,mouseX,mouseY):
     app.hoverX, app.hoverY = app.width, app.height
+    if isLegal(app,mouseX,mouseY):
+        changeBoardStatus(app,mouseX,mouseY)
+        app.p1Turn = not app.p1Turn
+
+def isLegal(app,mouseX,mouseY):
+    return True
+
+def changeBoardStatus(app,mouseX,mouseY):
+    pass
 
 def main():
     runAppWithScreens(initialScreen='select')
