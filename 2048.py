@@ -200,7 +200,6 @@ def makeMove(app, key):
         app.boardStatus = []
         for rowList in temps:
             app.boardStatus.append(rowList[::-1])
- 
     app.curScore += totalScore
     if app.curScore > app.bestScore:
         app.bestScore = app.curScore

@@ -15,7 +15,9 @@ def resetApp(app):
     app.gridSizeSelectDone = False
     app.instruction = False
     #game
-
+    app.p1Turn = True
+    app.boardLeft, app.boardTop = (50/400) * app.width, (50/400) * app.height
+    app.boardWidth, app.boardHeight = (300/400) * app.width, (300/400) * app.height
 
 ################################################
 #__selectScreen___
@@ -59,13 +61,12 @@ def drawColorSelectCircles(app):
 def drawSmallDots(app):
     squareOffset = (30/400) * app.width
     squareSize = squareOffset * 2
-    difference = squareSize / app.dim
+    difference = squareSize / (app.dim - 1)
     squareCenterX,squareCenterY = (3/4)*app.width,(3/4)*app.height
     squareLeft,squareTop = squareCenterX - squareOffset,squareCenterY - squareOffset
     smallDotRadius = (1/400) * app.width
     labelAdj = (4/400) * app.height
-    xAdj = (3/400) * app.width
-    drawLabel('grid size',(3/4)*app.width - xAdj,(21/32)*app.height - labelAdj,size=14,bold=True)
+    drawLabel('grid size',(3/4)*app.width,(21/32)*app.height - labelAdj,size=14,bold=True)
     for i in range(app.dim):
         x = squareLeft + i * difference
         for j in range(app.dim):
@@ -142,13 +143,13 @@ def select_onKeyPress(app,key):
                     app.colorSelectDone = True
         elif not app.gridSizeSelectDone:
             if key == 'right':
-                if app.dim == 10:
+                if app.dim == 9:
                     app.dim = 4
                 else:
                     app.dim += 1
             elif key == 'left':
                 if app.dim == 4:
-                    app.dim = 10
+                    app.dim = 9
                 else:
                     app.dim -= 1
             elif key == 'enter':
@@ -162,7 +163,22 @@ def select_onKeyPress(app,key):
 #############################################
 
 def game_redrawAll(app):
-    drawRect(10,10,10,10)
+    drawBoard(app)
+    # drawTurn(app)
+    # drawGhostPiece(app)
+    # drawGameStatus(app)
+
+def drawBoard(app):
+    if app.dim > 6:
+        circleRad = (5/400) * app.width
+    else:
+        circleRad = (10/400) * app.width
+    diff = app.boardWidth / (app.dim - 1)
+    for i in range(app.dim):
+        y = app.boardTop + diff * i
+        for j in range(app.dim):
+            x = app.boardLeft + diff * j
+            drawCircle(x,y,circleRad)
 
 def main():
     runAppWithScreens(initialScreen='select')
