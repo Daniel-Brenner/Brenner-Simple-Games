@@ -164,7 +164,7 @@ def select_onKeyPress(app,key):
 
 def game_redrawAll(app):
     drawBoard(app)
-    # drawTurn(app)
+    drawTurnLabel(app)
     # drawGhostPiece(app)
     # drawGameStatus(app)
 
@@ -179,6 +179,13 @@ def drawBoard(app):
         for j in range(app.dim):
             x = app.boardLeft + diff * j
             drawCircle(x,y,circleRad)
+
+def drawTurnLabel(app):
+    if app.p1Turn:
+        msg = "Player 1's Turn"
+    else:
+        msg = "Player 2's Turn"
+    drawLabel(msg,app.width/2,(2/32)*app.height,size=16,bold=True)
 
 def main():
     runAppWithScreens(initialScreen='select')
