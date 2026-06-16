@@ -20,13 +20,15 @@ def resetApp(app):
     app.boardWidth, app.boardHeight = (300/400) * app.width, (300/400) * app.height
     app.boardStatus = boardGen(app)
     app.hoverX,app.hoverY = app.width, app.height
+    app.p1Score, app.p2Score = 0, 0
+    app.gameOver = False
 
 def boardGen(app):
     res = []
-    numExits = 4
-    for _ in range(app.dim):
+    numExits = 2
+    for _ in range(app.dim + 1):
         newRow = []
-        for _ in range(app.dim):
+        for _ in range(app.dim + 1):
             newEntry = [None]
             for _ in range(numExits):
                 newEntry.append(None)
@@ -180,9 +182,12 @@ def select_onKeyPress(app,key):
 def game_redrawAll(app):
     drawBoard(app)
     drawTurnLabel(app)
+    drawScores(app)
     drawGhostPiece(app)
     drawGameStatus(app)
-
+    if app.gameOver:
+        drawGameOver(app)
+   
 def drawBoard(app):
     if app.dim > 6:
         circleRad = (5/400) * app.width
@@ -201,6 +206,10 @@ def drawTurnLabel(app):
     else:
         msg = "Player 2's Turn"
     drawLabel(msg,app.width/2,(2/32)*app.height,size=16,bold=True)
+
+def drawScores(app):
+    drawLabel(f'Player 1 Score: {app.p1Score}',(2/12)*app.width,(2/32)*app.height,size=14,bold=True)
+    drawLabel(f'Player 2 Score: {app.p2Score}',(10/12)*app.width,(2/32)*app.height,size=14,bold=True)
 
 def drawGhostPiece(app):
     diff = ((app.boardWidth / (app.dim - 1))/400) * app.width
@@ -228,15 +237,18 @@ def drawGameStatus(app):
         y = app.boardTop + diff * row
         for col in range(app.dim):
             x = app.boardLeft + diff * col
-            box,toLeft,toTop,toRight,toBot = app.boardStatus[row][col]
+            box,toRight,toBot = app.boardStatus[row][col]
             if box != None:
                 color = getColor(app,box)
-                drawRect(x,y,diff,diff,fill=color)
-            for entry in [toLeft,toTop,toRight,toBot]:
-                print(entry)
+                drawRect(x,y,diff,diff,fill=color,opacity=60)
+            counter = 0
+            diffsList = [(diff,0),(0,diff)]
+            for entry in [toRight,toBot]:
                 if entry != None:
                     color = getColor(app,entry)
-
+                    dx,dy = diffsList[counter]
+                    drawLine(x,y,x+dx,y+dy,fill=color,opacity=60)
+                counter += 1
 
 def getColor(app,entry):
     if entry == 'p1':
@@ -244,20 +256,121 @@ def getColor(app,entry):
     else:
         return app.p2Color
 
+def drawGameOver(app):
+    adj = (13/400) * app.height
+    rectWidth = (29/32) * app.width
+    rectHeight = (1/5) * app.width
+    drawRect(app.width/2,app.height/2,rectWidth,rectHeight,align='center',fill='gold',border='black')
+    if app.p1Score > app.p2Score:
+        drawLabel('Game Over! Player 1 Wins!',app.width/2,app.height/2-adj,size=14,bold=True)
+    elif app.p2Score > app.p1Score:
+        drawLabel('Game Over! Player 2 Wins!',app.width/2,app.height/2-adj,size=14,bold=True)
+    else:
+        drawLabel('Game Over! It Was a Draw',app.width/2,app.height/2-adj,size=14,bold=True)
+    drawLabel('Press any key or press the mouse to return to home screen',app.width/2,(app.height/2) + adj)
+
 def game_onMouseMove(app,mouseX,mouseY):
-    app.hoverX, app.hoverY = mouseX,mouseY
+    if not app.gameOver:
+        app.hoverX, app.hoverY = mouseX,mouseY
 
 def game_onMousePress(app,mouseX,mouseY):
-    app.hoverX, app.hoverY = app.width, app.height
-    if isLegal(app,mouseX,mouseY):
-        changeBoardStatus(app,mouseX,mouseY)
-        app.p1Turn = not app.p1Turn
+    if not app.gameOver:
+        app.hoverX, app.hoverY = app.width, app.height
+        if isLegal(app,mouseX,mouseY):
+            if not changeBoardStatus(app,mouseX,mouseY):
+                app.p1Turn = not app.p1Turn
+        if app.p1Score + app.p2Score == (app.dim - 1) ** 2:
+            app.gameOver = True
+    else:
+        resetApp(app)
+        setActiveScreen('select')
+
+def game_onKeyPress(app,key):
+    if app.gameOver:
+        resetApp(app)
+        setActiveScreen('select')
 
 def isLegal(app,mouseX,mouseY):
-    return True
+    diff = ((app.boardWidth / (app.dim - 1))/400) * app.width
+    adj = diff / 3
+    for row in range(app.dim):
+        y = app.boardTop + diff * row
+        for col in range(app.dim):
+            x = app.boardLeft + diff * col
+            if col < app.dim - 1:
+                if (x <= mouseX <= x + diff and 
+                    y - adj <= mouseY <= y + adj):
+                    return app.boardStatus[row][col][1] == None 
+            if row < app.dim - 1:
+                if (x - adj <= mouseX <= x + adj and 
+                    y <= mouseY <= y + diff):
+                    return app.boardStatus[row][col][2] == None 
+    return False
 
-def changeBoardStatus(app,mouseX,mouseY):
-    pass
+def changeBoardStatus(app, mouseX, mouseY):
+    if app.p1Turn:
+        curPlayer = 'p1'
+    else:
+        curPlayer = 'p2'
+    diff = ((app.boardWidth / (app.dim - 1))/400) * app.width
+    adj = diff / 3
+    for row in range(app.dim):
+        y = app.boardTop + diff * row
+        for col in range(app.dim):
+            x = app.boardLeft + diff * col
+            if col < app.dim - 1:
+                if (x <= mouseX <= x + diff and 
+                    y - adj <= mouseY <= y + adj):
+                    app.boardStatus[row][col][1] = curPlayer
+                    closedBelow = checkSingleBox(app, row, col, curPlayer)
+                    closedAbove = checkSingleBox(app, row - 1, col, curPlayer)
+                    if closedAbove and closedBelow:
+                        if curPlayer == 'p1':
+                            app.p1Score += 2
+                        else:
+                            app.p2Score += 2
+                        return True
+                    elif closedBelow or closedAbove:
+                        if curPlayer == 'p1':
+                            app.p1Score += 1
+                        else:
+                            app.p2Score += 1
+                        return True
+                    else:
+                        return False
+            if row < app.dim - 1:
+                if (x - adj <= mouseX <= x + adj and 
+                    y <= mouseY <= y + diff): 
+                    app.boardStatus[row][col][2] = curPlayer
+                    closedRight = checkSingleBox(app, row, col, curPlayer)
+                    closedLeft = checkSingleBox(app, row, col - 1, curPlayer)
+                    if closedRight and closedLeft:
+                        if curPlayer == 'p1':
+                            app.p1Score += 2
+                        else:
+                            app.p2Score += 2
+                        return True
+                    elif closedRight or closedLeft:
+                        if curPlayer == 'p1':
+                            app.p1Score += 1
+                        else:
+                            app.p2Score += 1
+                        return True
+                    else:
+                        return False
+    return False
+
+def checkSingleBox(app, row, col, curPlayer):
+    if 0 <= row < app.dim - 1 and 0 <= col < app.dim - 1:
+        if app.boardStatus[row][col][0] != None:
+            return False
+        if (app.boardStatus[row][col][1] != None and       
+            app.boardStatus[row][col][2] != None and       
+            app.boardStatus[row][col + 1][2] != None and   
+            app.boardStatus[row + 1][col][1] != None):     
+            app.boardStatus[row][col][0] = curPlayer
+            return True
+    return False
 
 def main():
     runAppWithScreens(initialScreen='select')
